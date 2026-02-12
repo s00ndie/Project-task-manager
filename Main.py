@@ -1,4 +1,6 @@
 from __future__ import annotations
+
+import os
 from project_manager import ProjectManager
 from task_manager import TaskManager
 from utils import (
@@ -10,6 +12,8 @@ from utils import (
     show_ok,
 )
 
+print("DEBUG RUNNING:", os.path.abspath(__file__))
+
 
 def main() -> None:
     pm = ProjectManager()
@@ -19,6 +23,9 @@ def main() -> None:
         print_menu()
         choice = prompt("Kies een optie: ")
 
+        # Debug: laat EXACT zien wat je keuze is
+        print("DEBUG choice =", repr(choice))
+
         try:
             if choice == "1":
                 name = prompt("Projectnaam: ")
@@ -27,7 +34,9 @@ def main() -> None:
                 show_ok("Project aangemaakt.")
 
             elif choice == "2":
-                print_projects(pm.list_projects())
+                projects = pm.list_projects()
+                print("DEBUG projects count =", len(projects))
+                print_projects(projects)
 
             elif choice == "3":
                 name = prompt("Welke projectnaam? ")
@@ -46,8 +55,9 @@ def main() -> None:
 
                 title = prompt("Taaktitel: ")
                 desc = prompt("Beschrijving (optioneel): ")
-                prio = prompt("Prioriteit (laag/normaal/hoog): ") or "normaal"
+                prio = prompt("Prioriteit (laag/normaal/hoog, leeg=normaal): ") or "normaal"
                 tm.add_task(p, title, desc, prio)
+                pm.save()
                 show_ok("Taak aangemaakt.")
 
             elif choice == "5":
@@ -60,6 +70,7 @@ def main() -> None:
                 title = prompt("Welke taak? ")
                 new_status = prompt("Nieuwe status (bezig/afgerond): ")
                 tm.change_status(p, title, new_status)
+                pm.save()
                 show_ok("Status aangepast.")
 
             elif choice == "6":
@@ -76,6 +87,7 @@ def main() -> None:
 
                 title = prompt("Welke taak verwijderen? ")
                 tm.delete_task(p, title)
+                pm.save()
                 show_ok("Taak verwijderd.")
 
             elif choice == "0":
@@ -83,7 +95,7 @@ def main() -> None:
                 break
 
             else:
-                show_error("Onbekende optie.")
+                show_error("Onbekende optie. Kies 0 t/m 7.")
 
         except ValueError as e:
             show_error(str(e))

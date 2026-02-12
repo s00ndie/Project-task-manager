@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import List
+
 from models import Project
 
 
@@ -8,10 +8,32 @@ def prompt(text: str) -> str:
 
 
 def print_line() -> None:
-    print("-" * 50)
+    print("-" * 55)
 
 
-def print_projects(projects: List[Project]) -> None:
+def show_ok(msg: str) -> None:
+    print(f"✅ {msg}")
+
+
+def show_error(msg: str) -> None:
+    print(f"❌ {msg}")
+
+
+def print_menu() -> None:
+    print_line()
+    print("MENU")
+    print("1) Project aanmaken")
+    print("2) Projecten tonen")
+    print("3) Project details tonen")
+    print("4) Taak aanmaken")
+    print("5) Taakstatus wijzigen")
+    print("6) Project sluiten")
+    print("7) Taak verwijderen")
+    print("0) Stop")
+    print_line()
+
+
+def print_projects(projects: list[Project]) -> None:
     if not projects:
         print("Geen projecten.")
         return
@@ -45,24 +67,4 @@ def print_project_detail(project: Project) -> None:
             print(f"  > {t.description}")
     print_line()
 
-
-def print_menu() -> None:
-    print_line()
-    print("MENU")
-    print("1) Project aanmaken")
-    print("2) Projecten tonen")
-    print("3) Project details tonen")
-    print("4) Taak aanmaken")
-    print("5) Taakstatus wijzigen")
-    print("6) Project sluiten")
-    print("7) Taak verwijderen")
-    print("0) Stop")
-    print_line()
-
-
-def show_error(msg: str) -> None:
-    print(f"❌ {msg}")
-
-
-def show_ok(msg: str) -> None:
-    print(f"✅ {msg}")
+    # TODO: print taken

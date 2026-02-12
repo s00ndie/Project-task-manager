@@ -1,10 +1,12 @@
 from __future__ import annotations
+
 from datetime import datetime
 from typing import Optional
+
 from models import Project, Task
 from validators import (
     ensure_not_empty,
-    ensure_task_title_unique_in_project,
+    ensure_task_title_unique,
     ensure_priority_valid,
     ensure_project_open,
     ensure_status_valid,
@@ -15,10 +17,17 @@ from validators import (
 
 
 class TaskManager:
+    def find_task(self, project: Project, title: str) -> Optional[Task]:
+        title = (title or "").strip()
+        for t in project.tasks:
+            if t.title.lower() == title.lower():
+                return t
+        return None
+
     def add_task(self, project: Project, title: str, description: str = "", priority: str = "normaal") -> Task:
         ensure_project_open(project)
         ensure_not_empty(title, "Taaktitel")
-        ensure_task_title_unique_in_project(project, title)
+        ensure_task_title_unique(project, title)
         ensure_priority_valid(priority)
 
         task = Task(
@@ -26,16 +35,11 @@ class TaskManager:
             description=(description or "").strip(),
             priority=priority,
             status="nieuw",
+            created_at=datetime.now(),
+            completed_at=None,
         )
         project.tasks.append(task)
         return task
-
-    def find_task(self, project: Project, title: str) -> Optional[Task]:
-        title = (title or "").strip()
-        for t in project.tasks:
-            if t.title.lower() == title.lower():
-                return t
-        return None
 
     def change_status(self, project: Project, title: str, new_status: str) -> None:
         task = self.find_task(project, title)
